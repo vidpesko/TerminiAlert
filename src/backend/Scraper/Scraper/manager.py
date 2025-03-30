@@ -11,6 +11,7 @@ Process - every x minutes/hours:
 import subprocess
 import sys
 from pathlib import Path
+from datetime import datetime
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -42,11 +43,20 @@ def run_spider(spider_name: str, urls: list[str]):
 
 def start_manager():
     # Main process - starts manager process
-    # 1. Fetch reminders & run spiders
+    # 1. Fetch reminders
     with Session(engine) as session:
         reminders = session.query(Reminder).all()
 
+        # r = Reminder(email="vid@pesko.si", service_name="avp", current_date=datetime(2025, 4, 20, 12, 30), filters={
+        #     "type": 2,
+        #     "cat": [4, 1],
+        #     "izpitniCenter": 18
+        # })
+        # session.add(r)
+        # session.commit()
+
         for reminder in reminders:
+            # 2. Run spider
             # Get spider name and url gen function
             service = REMINDER_HANDLING_TABLE.get(reminder.service_name)
 
@@ -54,13 +64,15 @@ def start_manager():
                 raise Exception(
                     f"For service type '{reminder.service_name}', there is no entry in REMINDER_HANDLING_TABLE"
                 )
-            
+
             spider_name, url_gen_func = service
             url = url_gen_func(reminder.filters)
-
             response = run_spider(spider_name, [url, ])
 
-    # 3. Send emails (if needed)
+            # 3. Send emails (if needed)
+            
+            # if reminder.suggested_date
+            # session.query()
 
 
 if __name__ == "__main__":

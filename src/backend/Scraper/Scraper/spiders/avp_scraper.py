@@ -13,11 +13,11 @@ class AvpSpider(scrapy.Spider):
         "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?&cat=-&type=1&izpitniCenter=19&lokacija=157&offset=0&sentinel_type=ok&sentinel_status=ok&is_ajax=1",
     ]
 
-    # custom_settings = {
-    #     # "ITEM_PIPELINES": {
-    #     #     "Scraper.pipelines.ErrorPipeline": 290,
-    #     # }
-    # }
+    custom_settings = {
+        "ITEM_PIPELINES": {
+            "Scraper.pipelines.SlotPipeline": 290,
+        }
+    }
 
     def __init__(self, start_urls: list=None, urls: str=None, name=None, **kwargs):
         super().__init__(name, **kwargs)

@@ -1,13 +1,32 @@
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+import sys
+from pathlib import Path
 
-
-# useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
-class ScraperPipeline:
-    def process_item(self, item, spider):
+from .items import Slot
+
+try:
+    import shared
+except ModuleNotFoundError:
+    sys.path.append(str(Path.cwd().parent.parent))
+finally:
+    from shared.db.models import AvpSlot
+    from shared.config import settings
+
+
+engine = create_engine(settings.create_engine_url())
+
+
+class SlotPipeline:
+    def process_item(self, item: Slot, spider):
+        adapter = ItemAdapter(item)
+
+        # Save to db
+        with Session(engine) as session:
+            slot = AvpSlot(service_name="avp", **dict(adapter.items()))
+            
+
         return item
