@@ -1,0 +1,74 @@
+"""
+Script, which manages all processes related to scraping. If periodically fetches all reminders from db, enumerates them and scrapes websites.
+
+Process - every x minutes/hours:
+    1. Fetch all reminders from db
+    2. Enumerates reminders and runs spider for each
+    3. Sends emails if needed
+
+"""
+
+import subprocess
+import sys
+from pathlib import Path
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
+try:
+    import shared
+except ModuleNotFoundError:
+    sys.path.append(str(Path.cwd().parent.parent))
+finally:
+    from shared.db.models import Reminder
+    from shared.config import settings
+
+from manager_utils import REMINDER_HANDLING_TABLE
+
+
+# Global sqlalchemy engine instance
+engine = create_engine(settings.create_engine_url())
+
+
+def run_spider(spider_name: str, urls: list[str]):
+    result = subprocess.run(
+        ["./run_spider.sh", spider_name, *urls],
+        capture_output=True,
+        text=True,
+    )
+
+    print(result.stderr)
+
+
+def start_manager():
+    # Main process - starts manager process
+    # 1. Fetch reminders & run spiders
+    with Session(engine) as session:
+        reminders = session.query(Reminder).all()
+
+        for reminder in reminders:
+            # Get spider name and url gen function
+            service = REMINDER_HANDLING_TABLE.get(reminder.service_name)
+
+            if not service:
+                raise Exception(
+                    f"For service type '{reminder.service_name}', there is no entry in REMINDER_HANDLING_TABLE"
+                )
+            
+            spider_name, url_gen_func = service
+            url = url_gen_func(reminder.filters)
+
+            response = run_spider(spider_name, [url, ])
+
+    # 3. Send emails (if needed)
+
+
+if __name__ == "__main__":
+    # run_spider(
+    #     "avp",
+    #     [
+    #         "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?&cat=-&type=VSE&type=2&type=1&izpitniCenter=20&lokacija=194&offset=0&sentinel_type=ok&sentinel_status=ok&is_ajax=1"
+    #     ],
+    # )
+
+    start_manager()

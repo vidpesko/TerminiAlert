@@ -1,2 +1,12 @@
+# API
 fastapi[standard]
+pydantic-settings
+
+# Database
+sqlalchemy
+asyncpg
+greenlet
+psycopg2
+
+# Scraping
 Scrapy

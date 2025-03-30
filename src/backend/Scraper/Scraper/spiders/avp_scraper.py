@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import scrapy
@@ -11,6 +12,26 @@ class AvpSpider(scrapy.Spider):
     start_urls = [
         "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?&cat=-&type=1&izpitniCenter=19&lokacija=157&offset=0&sentinel_type=ok&sentinel_status=ok&is_ajax=1",
     ]
+
+    # custom_settings = {
+    #     # "ITEM_PIPELINES": {
+    #     #     "Scraper.pipelines.ErrorPipeline": 290,
+    #     # }
+    # }
+
+    def __init__(self, start_urls: list=None, urls: str=None, name=None, **kwargs):
+        super().__init__(name, **kwargs)
+        # Check if start_urls have been provided as argument to init
+
+        if start_urls:
+            self.start_urls = start_urls
+
+        if urls:
+            self.start_urls = json.loads(urls) if urls else []
+
+    def start_requests(self):
+        for url in self.start_urls:
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
         for event in response.css(".dogodek"):
