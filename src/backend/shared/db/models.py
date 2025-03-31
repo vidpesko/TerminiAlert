@@ -21,6 +21,7 @@ class Reminder(Base):
     frequency: Mapped[Optional[str]] = mapped_column(default="medium")
     service_name: Mapped[str]
     filters: Mapped[Optional[dict]] = mapped_column(JSONB)
+    service_url: Mapped[Optional[str]]
 
     created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
 
@@ -42,6 +43,7 @@ class AvpSlot(Base):
     location_district: Mapped[str]
     location: Mapped[str]
 
+    service_url: Mapped[str]
     created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
 
     def __str__(self):

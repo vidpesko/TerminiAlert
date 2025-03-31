@@ -35,7 +35,7 @@ class SlotLoader(ItemLoader):
     date_in = MapCompose(lambda x: datetime.strptime(x, "%d. %m. %Y %H:%M"))
 
     spots_left_in = MapCompose(
-        lambda x: int(re.search(r"Še\s*(\d+)\s*prosto mesto", x).group(1))
+        lambda x: int(re.search(r"Še\s*(\d+)\s*", x).group(1))
     )
 
     exam_type_in = MapCompose(lambda x: VALUES_TRANSLATION_TABLE.get(x, x))
@@ -46,3 +46,9 @@ class SlotLoader(ItemLoader):
     duration_in = MapCompose(lambda x: int(re.search(r"\(\s*trajanje\s*(\d+)\s*minut\s*\)", x).group(1)))
 
     location_in = MapCompose(lambda x: x.removeprefix(", "))
+
+
+@dataclass
+class SlotsResult:
+    num_of_all_results: int
+    slots: list[Slot]

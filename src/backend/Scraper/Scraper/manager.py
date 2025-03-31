@@ -66,13 +66,21 @@ def start_manager():
                 )
 
             spider_name, url_gen_func = service
-            url = url_gen_func(reminder.filters)
-            response = run_spider(spider_name, [url, ])
+
+            if not reminder.service_url:
+                url = url_gen_func(reminder.filters)
+                reminder.service_url = url
+            else:
+                url = reminder.service_url
+
+            # response = run_spider(spider_name, [url, ])
 
             # 3. Send emails (if needed)
-            
+
             # if reminder.suggested_date
             # session.query()
+
+        session.commit()
 
 
 if __name__ == "__main__":

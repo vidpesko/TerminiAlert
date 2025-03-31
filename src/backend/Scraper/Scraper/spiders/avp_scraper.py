@@ -3,14 +3,14 @@ from pathlib import Path
 
 import scrapy
 
-from ..items import Slot, SlotLoader
+from ..items import Slot, SlotLoader, SlotsResult
 
 
 class AvpSpider(scrapy.Spider):
     name = "avp"
 
     start_urls = [
-        "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?&cat=-&type=1&izpitniCenter=19&lokacija=157&offset=0&sentinel_type=ok&sentinel_status=ok&is_ajax=1",
+        "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?&type=-&cat=-&izpitniCenter=-1&lokacija=-1&offset=0&sentinel_type=ok&sentinel_status=ok&is_ajax=1",
     ]
 
     custom_settings = {
@@ -34,6 +34,8 @@ class AvpSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
+        slots = []
+
         for event in response.css(".dogodek"):
             slot = SlotLoader(item=Slot(), response=response, selector=event)
             # Date
@@ -56,4 +58,6 @@ class AvpSpider(scrapy.Spider):
             slot.add_css("location", ".upperOpomnikDiv > span:nth-of-type(2)::text")
 
             slot_item = slot.load_item()
-            yield slot_item
+            slots.append(slot_item)
+
+        yield SlotsResult(0, slots)
