@@ -8,8 +8,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from shared.config import settings
-from api.database import session_manager
-# from api.routers import car, reminders
+from app.database import session_manager
+from app.api.routers import avp_reminders_api, users_api
 from shared.db.models import Reminder
 
 
@@ -43,10 +43,12 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-# Vehicle router: all operations regarding scraping & retriving vehicles
-# app.include_router(car.router)
-# Reminders router: all operations for app "Avtonet Obvescanje"
-# app.include_router(reminders.router, include_in_schema=False)
+
+# Users router: all user operations
+app.include_router(users_api.router, include_in_schema=False)
+
+# AVP router: all operations regarding AVP services
+app.include_router(avp_reminders_api.router)
 
 
 if __name__ == "__main__":

@@ -6,6 +6,13 @@ from urllib.parse import urlencode
 
 
 def avp_url_generator(filters: dict) -> str:
+    filters_keys_translation_table = {
+        "exam_type": "type",
+        "categories": "cat",
+        "location_district": "izpitniCenter",
+        "location": "lokacija",
+    }
+
     default_url_params = {
         "type": "-",
         "cat": "-",
@@ -20,7 +27,8 @@ def avp_url_generator(filters: dict) -> str:
     _filters = default_url_params
 
     for key, val in filters.items():
-        _filters[key] = val
+        new_key = filters_keys_translation_table.get(key, key)
+        _filters[new_key] = val
 
     url = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?"
     url_params = urlencode(_filters, doseq=True)

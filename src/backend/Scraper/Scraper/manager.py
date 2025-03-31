@@ -21,7 +21,7 @@ try:
 except ModuleNotFoundError:
     sys.path.append(str(Path.cwd().parent.parent))
 finally:
-    from shared.db.models import Reminder
+    from shared.db.models import Reminder, AvpSlot
     from shared.config import settings
 
 from manager_utils import REMINDER_HANDLING_TABLE
@@ -38,7 +38,9 @@ def run_spider(spider_name: str, urls: list[str]):
         text=True,
     )
 
-    print(result.stderr)
+    # print(result.stderr)
+
+    # TODO Add error / success checking
 
 
 def start_manager():
@@ -73,9 +75,14 @@ def start_manager():
             else:
                 url = reminder.service_url
 
-            # response = run_spider(spider_name, [url, ])
+            response = run_spider(spider_name, [url, ])  # TODO Check if response returns error
 
             # 3. Send emails (if needed)
+            slots = session.query(AvpSlot).where(AvpSlot.service_url == url).order_by(AvpSlot.date).all()
+            nearest_slot = slots[0]
+
+            if (nearest_slot.date < reminder.current_date) and (nearest_slot.date < reminder.suggested_date):
+                reminder.suggested_date = nearest_slot.date
 
             # if reminder.suggested_date
             # session.query()

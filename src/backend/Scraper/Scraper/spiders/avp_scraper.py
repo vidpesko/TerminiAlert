@@ -10,7 +10,7 @@ class AvpSpider(scrapy.Spider):
     name = "avp"
 
     start_urls = [
-        "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?&type=-&cat=-&izpitniCenter=-1&lokacija=-1&offset=0&sentinel_type=ok&sentinel_status=ok&is_ajax=1",
+        "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?type=2&cat=4&cat=1&izpitniCenter=18&lokacija=-1&offset=0&sentinel_type=ok&sentinel_status=ok&is_ajax=1",
     ]
 
     custom_settings = {
