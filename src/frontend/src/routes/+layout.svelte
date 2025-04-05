@@ -1,4 +1,6 @@
 <script>
+    import LogoImg from '$lib/static/images/logo.png';
+
 	import '../app.css';
 	
 	let { children } = $props();
@@ -9,9 +11,8 @@
     <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div class="flex flex-wrap justify-between items-center">
             <div class="flex justify-start items-center">
-                <a href="https://flowbite.com" class="flex mr-4">
-                    <img src="https://flowbite.s3.amazonaws.com/logo.svg" class="mr-3 h-8" alt="FlowBite Logo" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+                <a href="/" class="flex mr-4">
+                    <img src={LogoImg} class="mr-3 h-8" alt="FlowBite Logo" />
                 </a>
                 </div>
             <div class="flex items-center lg:order-2">
@@ -152,8 +153,9 @@
     </nav>
 </header>
 
-
-{@render children()}
+<div class="h-[95vh]">
+    {@render children()}
+</div>
 
 
 <footer class="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800">
