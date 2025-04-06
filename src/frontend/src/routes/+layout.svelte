@@ -1,5 +1,5 @@
 <script>
-    import LogoImg from '$lib/static/images/logo.png';
+    import LogoImg from '$lib/static/images/logo.svg';
 
 	import '../app.css';
 	

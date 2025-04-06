@@ -1,5 +1,5 @@
 <script>
-    import LogoImg from '$lib/static/images/logo.png';
+    import LogoImg from '$lib/static/images/logo.svg';
 </script>
 
 <section class="bg-background dark:bg-background-dark h-full">
