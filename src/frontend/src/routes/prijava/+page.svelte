@@ -1,11 +1,15 @@
 <script>
     import LogoImg from '$lib/static/images/logo.svg';
+    import LogoDarkImg from '$lib/static/images/logo dark.svg';
 </script>
 
 <section class="bg-background dark:bg-background-dark h-full">
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 h-full">
-        <a href="/" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+        <a href="/" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white dark:hidden">
             <img class="w-1/2 mx-auto" src={LogoImg} alt="logo">
+        </a>
+        <a href="/" class="items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white hidden dark:flex">
+            <img class="w-1/2 mx-auto" src={LogoDarkImg} alt="logo">
         </a>
         <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
             <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
