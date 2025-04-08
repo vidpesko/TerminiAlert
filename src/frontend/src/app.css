@@ -20,3 +20,7 @@
     --color-background: #F9FAFB;
     --color-background-dark: #111827;
 }
+
+.custom-container {
+    @apply pt-4 pb-8 px-4 bg-white dark:bg-gray-800 shadow rounded-lg dark:border dark:border-gray-700;
+}
