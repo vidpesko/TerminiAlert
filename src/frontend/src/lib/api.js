@@ -8,3 +8,13 @@ export async function getReminders(email) {
     const json = await response.json();
     return json;
 }
+
+export async function delReminder(id) {
+    const url = API_BASE + `avp/reminder/${id}`;
+    
+    const response = await fetch(url, {
+        method: "DELETE"
+    });
+    const json = await response.json();
+    return json;
+}

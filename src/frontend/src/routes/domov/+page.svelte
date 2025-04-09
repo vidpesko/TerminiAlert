@@ -1,5 +1,15 @@
 <script>
     let { data } = $props();
+
+    import { delReminder } from '$lib/api';
+
+    let reminders = $derived(data.reminders);
+
+    async function deleteReminder(event, id) {
+        const response = await delReminder(id);
+
+        reminders = reminders.filter(item => item.reminder_id !== id);
+    }
 </script>
 
 <section class="bg-background dark:bg-background-dark py-10 min-h-[95vh]">
@@ -25,6 +35,7 @@
                     </div>
                 </div>
                 <div class="overflow-x-auto">
+                    {#key reminders}
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
@@ -38,7 +49,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {#each data.reminders as reminder}
+                            {#each reminders as reminder}
                             <tr class="border-b dark:border-gray-700">
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{reminder.reminder_name}</th>
                                 <td class="px-4 py-3">{reminder.filters.type}</td>
@@ -54,14 +65,11 @@
                                     <div id="xbox-series-s-dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
                                         <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="xbox-series-s-dropdown-button">
                                             <li>
-                                                <a href="" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Show</a>
-                                            </li>
-                                            <li>
-                                                <a href="" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit</a>
+                                                <a href="/uredi?id={reminder.reminder_id}" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Uredi</a>
                                             </li>
                                         </ul>
                                         <div class="py-1">
-                                            <a href="" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+                                            <button onclick={(event) => deleteReminder(event, reminder.reminder_id)} class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-start">Izbriši</button>
                                         </div>
                                     </div>
                                 </td>
@@ -69,6 +77,7 @@
                             {/each}
                         </tbody>
                     </table>
+                    {/key}
                 </div>
             </div>
         </div>
@@ -83,19 +92,19 @@
             </h2>
             
             <div class="">
-                <div class="rounded-lg shadow border border-gray-200 w-full p-2">
+                <div class="rounded-lg shadow border border-gray-200 w-full p-2 text-black dark:text-white">
                     <div class="">
                         <h4 class="font-bold">Moj opomnik</h4>
                         <p>Najdel je bil termin za opomnik kategorije XY</p>
                     </div>
                     <div class="flex gap-2 justify-between my-4">
                         <!-- New date / suggested date -->
-                        <div class="text-center text-red-800 text-sm">
+                        <div class="text-center text-red-800 dark:text-red-400 text-sm">
                             <p>Trenutno</p>
                             <p class="font-bold text-base">16.</p>
                             <p>April</p>
                         </div>
-                        <div class="text-center text-green-800 text-sm">
+                        <div class="text-center text-green-800 dark:text-green-400 text-sm">
                             <p>Nov termin</p>
                             <p class="font-bold text-base">13.</p>
                             <p>Marec</p>
