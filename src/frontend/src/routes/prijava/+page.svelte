@@ -4,7 +4,7 @@
 </script>
 
 <section class="bg-background dark:bg-background-dark h-full">
-    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 h-full">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 h-full min-h-[95vh]">
         <a href="/" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white dark:hidden">
             <img class="w-1/2 mx-auto" src={LogoImg} alt="logo">
         </a>
