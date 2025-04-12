@@ -1,6 +1,7 @@
 # API
 fastapi[standard]
 pydantic-settings
+python-multipart
 
 # Database
 sqlalchemy
