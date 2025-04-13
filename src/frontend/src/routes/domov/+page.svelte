@@ -52,7 +52,7 @@
                             {#each reminders as reminder}
                             <tr class="border-b dark:border-gray-700">
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{reminder.reminder_name}</th>
-                                <td class="px-4 py-3">{reminder.filters.type}</td>
+                                <td class="px-4 py-3">{(reminder.filters.exam_type == 1) ? "Teorija" : "Vožnja"}</td>
                                 <td class="px-4 py-3">{reminder.current_date}</td>
                                 <td class="px-4 py-3">{reminder.suggested_date}</td>
                                 <td class="px-4 py-3 flex items-center justify-end">

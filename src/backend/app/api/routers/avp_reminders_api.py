@@ -52,8 +52,10 @@ async def create_reminder(
     for key, val in reminder.model_dump().items():
         reminder_db.__setattr__(key, val)
 
+    reminder_db.current_date = reminder_db.current_date.replace(tzinfo=None)
+
     db_session.add(reminder_db)
-    # db_session.commit()
+    await db_session.commit()
 
     return SuccessMsg(description="Reminder created.", data={
         "reminder_id": reminder_db.reminder_id
