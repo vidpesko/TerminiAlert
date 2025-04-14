@@ -14,7 +14,7 @@ from app.api.dependencies.core import DBSessionDep
 
 # Shared
 from shared.config import settings
-from shared.db.models import Reminder
+from shared.db.models import Reminder, ReminderUpdate
 from shared.schemas.base import SuccessMsg, WarningMsg, BaseMsg
 from shared.schemas.avp import ReminderSchema
 
@@ -25,6 +25,26 @@ router = APIRouter(
     # dependencies=[Depends(is_request_coming_from_gateway)],
     responses={404: {"description": "Not found"}},
 )
+
+
+# GET /updates for email
+@router.get(
+    "/updates",
+)
+async def list_reminders(email: str, db_session: DBSessionDep) -> list[dict,]:
+    reminders = await db_session.execute(
+        select(Reminder).where(Reminder.email == email)
+    )
+
+    updates = []
+    reminders = reminders.scalars().all()
+    print(reminders[0].updates)
+    return []
+
+    for reminder in reminders:
+        updates += reminder.updates
+
+    return [u.as_dict() for u in updates]
 
 
 # GET /reminders for email

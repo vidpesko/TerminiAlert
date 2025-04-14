@@ -17,7 +17,7 @@
         <div class="custom-container w-3/4">
             
             <div class="relative overflow-hidden">
-                <div class="flex flex-col md:flex-row items-center justify-between p-4 px-0 text-center">
+                <div class="flex flex-col md:flex-row items-center justify-between p-4 pt-2 px-0 text-center">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white text-center flex items-center gap-2">
                         <svg class="w-7 h-7 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/>
@@ -83,7 +83,7 @@
         </div>
 
         <div class="custom-container w-1/4 ">
-            <h2 class="my-4 text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <h2 class="my-2 text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <svg class="w-7 h-7 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.556 8.5h8m-8 3.5H12m7.111-7H4.89a.896.896 0 0 0-.629.256.868.868 0 0 0-.26.619v9.25c0 .232.094.455.26.619A.896.896 0 0 0 4.89 16H9l3 4 3-4h4.111a.896.896 0 0 0 .629-.256.868.868 0 0 0 .26-.619v-9.25a.868.868 0 0 0-.26-.619.896.896 0 0 0-.63-.256Z"/>
                 </svg>

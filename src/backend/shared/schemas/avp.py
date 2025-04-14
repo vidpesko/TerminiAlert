@@ -21,3 +21,6 @@ class ReminderSchema(BaseModel):
     frequency: Literal["low", "mid", "high"]
     service_name: str = "avp"
     filters: Filters
+
+
+# class ReminderUpdate()
