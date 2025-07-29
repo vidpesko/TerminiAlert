@@ -1,5 +1,8 @@
 <script>
     let { data } = $props();
+    
+    import { onMount } from 'svelte';
+    import { initFlowbite } from 'flowbite';
 
     import { delReminder } from '$lib/api';
 
@@ -10,6 +13,10 @@
 
         reminders = reminders.filter(item => item.reminder_id !== id);
     }
+
+    onMount(() => {
+        initFlowbite();
+    });
 </script>
 
 <section class="bg-background dark:bg-background-dark py-10 min-h-[95vh]">
@@ -36,13 +43,14 @@
                 </div>
                 <div class="overflow-x-auto">
                     {#key reminders}
+                    {#if reminders.length != 0}
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-4 py-3">Ime</th>
                                 <th scope="col" class="px-4 py-3">Tip</th>
                                 <th scope="col" class="px-4 py-3">Trenutni datum</th>
-                                <th scope="col" class="px-4 py-3">Predlagan datum</th>
+                                <th scope="col" class="px-4 py-3">Najbližji najden datum</th>
                                 <th scope="col" class="px-4 py-3">
                                     <span class="sr-only">Actions</span>
                                 </th>
@@ -53,7 +61,7 @@
                             <tr class="border-b dark:border-gray-700">
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{reminder.reminder_name}</th>
                                 <td class="px-4 py-3">{(reminder.filters.exam_type == 1) ? "Teorija" : "Vožnja"}</td>
-                                <td class="px-4 py-3">{reminder.current_date}</td>
+                                <td class="px-4 py-3">{new Date(reminder.current_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>
                                 <td class="px-4 py-3">{reminder.suggested_date}</td>
                                 <td class="px-4 py-3 flex items-center justify-end">
                                     <!-- svelte-ignore a11y_consider_explicit_label -->
@@ -77,6 +85,11 @@
                             {/each}
                         </tbody>
                     </table>
+                    {:else}
+                    <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                        <span class="font-medium">Nimate opomnikov!</span> Vaši opomniki bodo prikazani tukaj, ko jih boste ustvarili.
+                    </div>
+                    {/if}
                     {/key}
                 </div>
             </div>
@@ -92,13 +105,15 @@
             </h2>
             
             <div class="">
-                <div class="rounded-lg shadow border border-gray-200 w-full p-2 text-black dark:text-white">
+                <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                    <span class="font-medium">Nimate obvestil!</span> Ko bo najden nov termin za vaš opomnik, boste tukaj lahko videli obvestilo.
+                </div>
+                <!-- <div class="rounded-lg border border-gray-400 w-full p-2 text-black dark:text-white">
                     <div class="">
                         <h4 class="font-bold">Moj opomnik</h4>
                         <p>Najdel je bil termin za opomnik kategorije XY</p>
                     </div>
                     <div class="flex gap-2 justify-between my-4">
-                        <!-- New date / suggested date -->
                         <div class="text-center text-red-800 dark:text-red-400 text-sm">
                             <p>Trenutno</p>
                             <p class="font-bold text-base">16.</p>
@@ -119,7 +134,7 @@
                         <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Sprejmi</button>
                         <button type="button" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Opusti</button>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

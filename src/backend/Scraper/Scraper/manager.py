@@ -24,7 +24,7 @@ finally:
     from shared.db.models import Reminder, AvpSlot
     from shared.config import settings
 
-from manager_utils import REMINDER_HANDLING_TABLE
+from manager_utils import REMINDER_HANDLING_TABLE, avp_url_generator
 
 
 # Global sqlalchemy engine instance
@@ -48,14 +48,6 @@ def start_manager():
     # 1. Fetch reminders
     with Session(engine) as session:
         reminders = session.query(Reminder).all()
-
-        # r = Reminder(email="vid@pesko.si", service_name="avp", current_date=datetime(2025, 4, 20, 12, 30), filters={
-        #     "type": 2,
-        #     "cat": [4, 1],
-        #     "izpitniCenter": 18
-        # })
-        # session.add(r)
-        # session.commit()
 
         for reminder in reminders:
             # 2. Run spider

@@ -1,7 +1,15 @@
 <script>
     import Breadcrumbs from "$lib/components/Breadcrumbs.svelte";
     import { locationOptions } from "$lib/options";
+
+    import { onMount } from 'svelte';
+    import { initFlowbite } from 'flowbite';
+    
     let { data } = $props();
+
+    import { toasts } from "$lib/toastStore.js";
+
+    let examType = $state();
 
     const structure = [
         {
@@ -11,6 +19,10 @@
     ]
 
     var locationDisctrict = $state();
+
+    onMount(() => {
+        initFlowbite();
+    });
 </script>
 
 
@@ -54,13 +66,13 @@
                     <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                             <div class="flex items-center ps-3">
-                                <input id="horizontal-list-radio-license" type="radio" value="1" name="exam_type" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" checked>
+                                <input bind:group={examType} id="horizontal-list-radio-license" type="radio" value="2" name="exam_type" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" required>
                                 <label for="horizontal-list-radio-license" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Teorija (CPP)</label>
                             </div>
                         </li>
                         <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                             <div class="flex items-center ps-3">
-                                <input id="horizontal-list-radio-id" type="radio" value="2" name="exam_type" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                <input bind:group={examType} id="horizontal-list-radio-id" type="radio" value="1" name="exam_type" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" required>
                                 <label for="horizontal-list-radio-id" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Vožnja</label>
                             </div>
                         </li>
@@ -83,7 +95,17 @@
                     <select id="location" name="location" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="-1" selected>Vse lokacije</option>
                         {#each locationOptions[locationDisctrict] as opt}
-                        <option value={opt[0]}>{opt[1]}</option>
+                        {#if examType == 1}
+                            {#if opt[1].includes("TESTIRNICA")}
+                            <option value={opt[0]}>{opt[1]}</option>
+                            {/if}
+                        {:else if examType == 2}
+                            {#if !opt[1].includes("TESTIRNICA")}
+                            <option value={opt[0]}>{opt[1]}</option>
+                            {/if}
+                        {:else}
+                            <option value={opt[0]}>{opt[1]}</option>
+                        {/if}
                         {/each}
                     </select>
                     {/key}
@@ -167,6 +189,7 @@
             <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
                 Ustvari
             </button>
+            <a href="/domov" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Pojdi nazaj</a>
         </form>
     </div>
 </section>

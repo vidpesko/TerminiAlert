@@ -75,6 +75,7 @@ async def create_reminder(
     reminder_db.current_date = reminder_db.current_date.replace(tzinfo=None)
 
     db_session.add(reminder_db)
+
     await db_session.commit()
 
     return SuccessMsg(description="Reminder created.", data={
@@ -93,7 +94,7 @@ async def edit_reminder(
     if reminder_db:
         for key, val in reminder.model_dump().items():
             reminder_db.__setattr__(key, val)
-        # db_session.commit()
+        await db_session.commit()
 
         return SuccessMsg(description="Reminder modified.")
     else:
@@ -109,8 +110,8 @@ async def delete_reminders(
     reminder_db = await db_session.get(Reminder, reminder_id)
 
     if reminder_db:
-        db_session.delete(reminder_db)
-        # db_session.commit()
+        await db_session.delete(reminder_db)
+        await db_session.commit()
         return SuccessMsg(description="Reminder deleted.")
     else:
         return WarningMsg(description="Reminder does not exist.")

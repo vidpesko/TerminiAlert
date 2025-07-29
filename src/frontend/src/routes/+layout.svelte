@@ -1,10 +1,19 @@
 <script>
+    import Toast from "$lib/components/Toast.svelte";
     import LogoImg from "$lib/static/images/logo.svg";
     import LogoDarkImg from "$lib/static/images/logo dark.svg";
-
+    
     import "../app.css";
 
+    import { onMount } from "svelte";
+
+    import { initFlowbite } from "flowbite";
+
     let { data, children } = $props();
+
+    onMount(() => {
+        initFlowbite();
+    });
 </script>
 
 <header class="antialiased">
@@ -53,9 +62,18 @@
 
                         Domov
                 </a>
-                <a href="/odjava" type="button" class="py-1.5 px-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                <button id="userActionsBtn" data-dropdown-toggle="userActionsDropdown" class="py-1.5 px-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
                     {data.email}
-                </a>
+                </button>
+                    
+                <!-- Dropdown menu -->
+                <div id="userActionsDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="userActionsBtn">
+                        <li>
+                        <a href="/odjava" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Odjava</a>
+                        </li>
+                    </ul>
+                </div>
                 <!-- Dropdown menu -->
                 <div
                 class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
@@ -194,10 +212,12 @@
 
 <div class="min-h-[95vh]">
     {@render children()}
+
+    <Toast />
 </div>
 
 <footer class="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800">
-    <div class="mx-auto max-w-screen-xl text-center">
+    <div class="mx-auto max-w-screen-xl text-center mb-4">
         <a
         href="/"
         class="flex dark:hidden justify-center items-center text-2xl font-semibold text-gray-900 dark:text-white"
@@ -217,30 +237,12 @@
         <ul
         class="flex flex-wrap justify-center items-center mb-6 text-gray-900 dark:text-white"
         >
-        <li>
-            <a href="#" class="mr-4 hover:underline md:mr-6">About</a>
-        </li>
-        <li>
-            <a href="#" class="mr-4 hover:underline md:mr-6">Premium</a>
-        </li>
-        <li>
-            <a href="#" class="mr-4 hover:underline md:mr-6">Campaigns</a>
-        </li>
-        <li>
-            <a href="#" class="mr-4 hover:underline md:mr-6">Blog</a>
-        </li>
-        <li>
-            <a href="#" class="mr-4 hover:underline md:mr-6">Affiliate Program</a>
-        </li>
-        <li>
-            <a href="#" class="mr-4 hover:underline md:mr-6">FAQs</a>
-        </li>
-        <li>
-            <a href="#" class="mr-4 hover:underline md:mr-6">Contact</a>
-        </li>
         </ul>
-        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
-        >© 2025 <a href="#" class="hover:underline">Termini™</a></span
-        >
+        <p>
+            <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
+            >© 2025 <a href="https://vid.pesko.si/" class="hover:underline">Termini™</a></span
+            >
+        </p>
     </div>
+    <a href="https://vid.pesko.si/" class="text-gray-500 hover:text-primary-500 sm:text-center dark:text-gray-400 hover:underline" target="_blank">Izdelano z ❤️ - Vid Pesko</a>
 </footer>

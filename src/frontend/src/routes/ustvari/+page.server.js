@@ -1,6 +1,7 @@
 import { redirect } from "@sveltejs/kit";
 
 import { createReminder, getReminders } from "$lib/api";
+import { toasts } from "$lib/toastStore";
 
 
 const filterKeys = ["exam_type", "cat", "location_district", "location", "calendar_date"];
@@ -8,9 +9,13 @@ const filterKeys = ["exam_type", "cat", "location_district", "location", "calend
 
 export async function load({ params, cookies, url }) {
     const reminderId = url.searchParams.get("reminder_id");
+    const email = cookies.get("termini_email");
+
+    if (!email) {
+        redirect(303, "/prijava");
+    }
 
     if (reminderId) {
-        const email = cookies.get("termini_email");
         const reminders = await getReminders(email);
         const reminder = reminders.find((u) => u.reminder_id == reminderId);
         console.log(reminder);
@@ -34,6 +39,15 @@ export const actions = {
             } else {
                 dataJson[key] = value;
             }
+        }
+
+        // Check if 'cat' is single value and convert to array if necessary
+        if (dataJson.cat && !Array.isArray(dataJson.cat)) {
+            dataJson.cat = [dataJson.cat];
+        }
+
+        if (!dataJson.reminder_name) {
+            dataJson.reminder_name = "Opomnik";
         }
         
         const filters = {};
@@ -62,7 +76,7 @@ export const actions = {
         dataJson.frequency = "mid";
 
         const response = await createReminder(dataJson);
-
+        
         throw redirect(303, "/domov");
     },
 };
