@@ -2,7 +2,14 @@
 This file contains url generating functions for every supported service. When manager has to handle a reminder, it will use table at the bottom to retireve spider name and function for generating urls
 """
 
+import datetime
 from urllib.parse import urlencode
+
+import yagmail
+
+
+EMAIL_ADDRESS = "spletneresitve1@gmail.com"
+EMAIL_APP_PASSWORD = "ensq kzpe rvig fvtc"  # App password for the gmail account
 
 
 def avp_url_generator(filters: dict) -> str:
@@ -34,6 +41,15 @@ def avp_url_generator(filters: dict) -> str:
     url_params = urlencode(_filters, doseq=True)
 
     return url + url_params
+
+
+def send_mail(to: str, new_date: datetime.datetime, subject = "Najden je bil nov termin"):
+    yag = yagmail.SMTP(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
+    contents = [
+        "Najden je bil nov termin!",
+        new_date.strftime("%d.%m.%Y %H:%M"),
+    ]
+    yag.send(to, subject, contents)
 
 
 REMINDER_HANDLING_TABLE = {

@@ -12,6 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 from datetime import datetime
+from time import sleep
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -24,7 +25,10 @@ finally:
     from shared.db.models import Reminder, AvpSlot
     from shared.config import settings
 
-from manager_utils import REMINDER_HANDLING_TABLE, avp_url_generator
+from manager_utils import REMINDER_HANDLING_TABLE, send_mail
+
+
+MANAGER_WAIT_TIME_MINUTES = 5  # How often to run manager iteration (in minutes)
 
 
 # Global sqlalchemy engine instance
@@ -43,7 +47,7 @@ def run_spider(spider_name: str, urls: list[str]):
     # TODO Add error / success checking
 
 
-def start_manager():
+def run_manager_iteration():
     # Main process - starts manager process
     # 1. Fetch reminders
     with Session(engine) as session:
@@ -66,11 +70,8 @@ def start_manager():
                 reminder.service_url = url
             else:
                 url = reminder.service_url
-            print(url, reminder.reminder_id, reminder.reminder_name)
 
             response = run_spider(spider_name, [url, ])  # TODO Check if response returns error
-
-            print("Response", response)
 
             # 3. Send emails (if needed)
             slots = session.query(AvpSlot).where(AvpSlot.service_url == url).order_by(AvpSlot.date).all()
@@ -79,14 +80,21 @@ def start_manager():
             if (nearest_slot.date < reminder.current_date):
                 if (reminder.suggested_date and (nearest_slot.date < reminder.suggested_date)) or not reminder.suggested_date:
                     reminder.suggested_date = nearest_slot.date
+                    send_mail(reminder.email, nearest_slot.date)
+
 
             # 4. Delete slots
             session.query(AvpSlot).filter(AvpSlot.service_url == url).delete()
 
-            # if reminder.suggested_date
-            # session.query()
-
             session.commit()
+
+
+def start_manager():
+    # Start periodically running manager
+    print(f"Started manager at {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}")
+    while True:
+        run_manager_iteration()
+        sleep(MANAGER_WAIT_TIME_MINUTES * 60)  # Convert minutes to seconds
 
 
 if __name__ == "__main__":
