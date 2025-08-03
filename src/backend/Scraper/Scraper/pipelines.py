@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from itemadapter import ItemAdapter
 
-from sqlalchemy import create_engine, and_
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from .items import Slot, SlotsResult

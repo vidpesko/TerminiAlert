@@ -95,11 +95,11 @@
                     <select id="location" name="location" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <option value="-1" selected>Vse lokacije</option>
                         {#each locationOptions[locationDisctrict] as opt}
-                        {#if examType == 1}
+                        {#if examType == 2}
                             {#if opt[1].includes("TESTIRNICA")}
                             <option value={opt[0]}>{opt[1]}</option>
                             {/if}
-                        {:else if examType == 2}
+                        {:else if examType == 1}
                             {#if !opt[1].includes("TESTIRNICA")}
                             <option value={opt[0]}>{opt[1]}</option>
                             {/if}

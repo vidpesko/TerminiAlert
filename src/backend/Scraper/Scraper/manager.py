@@ -66,28 +66,28 @@ def start_manager():
                 reminder.service_url = url
             else:
                 url = reminder.service_url
+            print(url, reminder.reminder_id, reminder.reminder_name)
 
             response = run_spider(spider_name, [url, ])  # TODO Check if response returns error
+
+            print("Response", response)
 
             # 3. Send emails (if needed)
             slots = session.query(AvpSlot).where(AvpSlot.service_url == url).order_by(AvpSlot.date).all()
             nearest_slot = slots[0]
 
-            if (nearest_slot.date < reminder.current_date) and (nearest_slot.date < reminder.suggested_date):
-                reminder.suggested_date = nearest_slot.date
+            if (nearest_slot.date < reminder.current_date):
+                if (reminder.suggested_date and (nearest_slot.date < reminder.suggested_date)) or not reminder.suggested_date:
+                    reminder.suggested_date = nearest_slot.date
+
+            # 4. Delete slots
+            session.query(AvpSlot).filter(AvpSlot.service_url == url).delete()
 
             # if reminder.suggested_date
             # session.query()
 
-        session.commit()
+            session.commit()
 
 
 if __name__ == "__main__":
-    # run_spider(
-    #     "avp",
-    #     [
-    #         "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?&cat=-&type=VSE&type=2&type=1&izpitniCenter=20&lokacija=194&offset=0&sentinel_type=ok&sentinel_status=ok&is_ajax=1"
-    #     ],
-    # )
-
     start_manager()

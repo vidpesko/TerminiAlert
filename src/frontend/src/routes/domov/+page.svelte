@@ -19,6 +19,7 @@
     });
 </script>
 
+
 <section class="bg-background dark:bg-background-dark py-10 min-h-[95vh]">
     <div class="flex justify-evenly gap-4 px-10">
         <div class="custom-container w-3/4">
@@ -62,7 +63,11 @@
                                 <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{reminder.reminder_name}</th>
                                 <td class="px-4 py-3">{(reminder.filters.exam_type == 1) ? "Teorija" : "Vožnja"}</td>
                                 <td class="px-4 py-3">{new Date(reminder.current_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>
-                                <td class="px-4 py-3">{reminder.suggested_date}</td>
+                                {#if reminder.suggested_date}
+                                <td class="px-4 py-3">{new Date(reminder.suggested_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>
+                                {:else}
+                                <td class="px-4 py-3">Ni datuma</td>
+                                {/if}
                                 <td class="px-4 py-3 flex items-center justify-end">
                                     <!-- svelte-ignore a11y_consider_explicit_label -->
                                     <button id="reminder-{reminder.reminder_id}-dropdown-button" data-dropdown-toggle="reminder-{reminder.reminder_id}-dropdown" class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100" type="button">
