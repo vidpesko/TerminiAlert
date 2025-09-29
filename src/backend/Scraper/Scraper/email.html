@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Najden je bil termin</title>
+</head>
+
+<body>
+    <center style="width:100%; background:#f4f6f8; padding:24px 12px;">
+        <table role="presentation" width="100%" style="max-width:600px;">
+            <tr>
+                <td>
+                    <div class="email-wrapper" role="article" aria-label="Earlier slot found notification from {{APP_NAME}}">
+                        <div class="content">
+                            <h1>Good news, {{user_name}} — an earlier slot is available!</h1>
+
+                            <p>
+                                We found a new driving exam slot earlier than your current booking on <strong>{{current_exam_date}}</strong>. An earlier slot on <strong>{{earlier_slot_date}}</strong> is available.
+                            </p>
+
+                            <div class="meta" role="region" aria-label="Slot details">
+                                <div style="font-weight:600;">Available slot</div>
+                                <div style="margin-top:6px;">📅 <strong>{{earlier_slot_date}}</strong></div>
+                                <div style="margin-top:6px;">📍 {{test_center_name_or_location}}</div>
+                            </div>
+
+                            <p style="margin-bottom:18px;">
+                                If you want that earlier slot, tap the button below to claim it now — slots fill fast.
+                            </p>
+
+                            <p style="text-align:left;">
+                                <a href="{{slot_link}}" class="btn" target="_blank" rel="noopener noreferrer">
+                                    View & claim slot
+                                </a>
+                            </p>
+
+                            <p class="small" style="margin-top:14px;">
+                                Tip: If the link doesn't work, copy & paste this URL into your browser:
+                                <br>
+                                <a href="{{slot_link}}" style="color:#1b4dbc; word-break:break-all;">
+                                    {{slot_link}}
+                                </a>
+                            </p>
+
+                            <hr style="border:none; border-top:1px solid #eef2f7; margin:18px 0;">
+
+                            <p class="muted">
+                                You asked <strong>{{APP_NAME}}</strong> to notify you when earlier exam
+                                slots become available. If you no longer want these alerts, you can
+                                <a href="{{manage_prefs_link}}" style="color:#1b4dbc;">
+                                    manage your preferences
+                                </a> or
+                                unsubscribe below.
+                            </p>
+                        </div>
+
+                        <div class="footer">
+                            <div style="margin-bottom:8px;">
+                                Sent by
+                                <a href="termini.pesko.si">termin.si</a>
+                            </div>
+                            <div class="small">
+                                <a href="{{support_link}}" style="color:#1b4dbc;">
+                                    Support
+                                </a>
+                                ·
+                                <a href="{{unsubscribe_link}}" style="color:#1b4dbc;">
+                                    Unsubscribe
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </center>
+</body>
+
+</html>

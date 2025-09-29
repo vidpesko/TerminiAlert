@@ -28,7 +28,7 @@ finally:
 from manager_utils import REMINDER_HANDLING_TABLE, send_mail
 
 
-MANAGER_WAIT_TIME_MINUTES = 5  # How often to run manager iteration (in minutes)
+MANAGER_WAIT_TIME_MINUTES = 0.1  # How often to run manager iteration (in minutes)
 
 
 # Global sqlalchemy engine instance
@@ -56,6 +56,7 @@ def run_manager_iteration():
         for reminder in reminders:
             # 2. Run spider
             # Get spider name and url gen function
+            print("Current reminder:", reminder.email, reminder.current_date)
             service = REMINDER_HANDLING_TABLE.get(reminder.service_name)
 
             if not service:
@@ -79,7 +80,8 @@ def run_manager_iteration():
 
             if (nearest_slot.date < reminder.current_date):
                 if (reminder.suggested_date and (nearest_slot.date < reminder.suggested_date)) or not reminder.suggested_date:
-                    reminder.suggested_date = nearest_slot.date
+                    print(f"Sending email to {reminder.email} about slot {nearest_slot.date}")
+                    # reminder.suggested_date = nearest_slot.date
                     send_mail(reminder.email, nearest_slot.date)
 
 
@@ -94,8 +96,9 @@ def start_manager():
     print(f"Started manager at {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}")
     while True:
         run_manager_iteration()
+        return
         sleep(MANAGER_WAIT_TIME_MINUTES * 60)  # Convert minutes to seconds
 
 
 if __name__ == "__main__":
-    start_manager()
+    # start_manager()

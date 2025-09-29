@@ -11,4 +11,9 @@ psycopg2
 
 # Scraping
 Scrapy
+
+# Other
+requests
 yagmail
+Jinja2
+premailer
