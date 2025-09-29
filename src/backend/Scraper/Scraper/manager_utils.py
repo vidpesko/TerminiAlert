@@ -278,16 +278,6 @@ def send_mail(to: str, new_date: datetime.datetime, subject = "Najden je bil nov
     # yag = yagmail.SMTP(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
     # contents = yagmail.raw(transform(EMAIL_HTML))
     # yag.send(to, subject, contents)
-    requests.post(
-        "https://api.mailgun.net/v3/sandbox6284851a92174776b018b94c64be6aaa.mailgun.org/messages",
-        auth=("api", "d8923a9a5ea15fb14efbe4d06d3eb158-8b22cbee-e2aa2b7b"),
-        data={
-            "from": "Mailgun Sandbox <postmaster@sandbox6284851a92174776b018b94c64be6aaa.mailgun.org>",
-            "to": "Vid Pesko <vidpesko.business@gmail.com>",
-            "subject": "Hello Vid Pesko",
-            "text": "Congratulations Vid Pesko, you just sent an email with Mailgun! You are truly awesome!",
-        },
-    )
 
 
 REMINDER_HANDLING_TABLE = {
