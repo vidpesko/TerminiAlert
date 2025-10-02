@@ -26,6 +26,7 @@ finally:
     from shared.config import settings
 
 from manager_utils import REMINDER_HANDLING_TABLE, send_mail
+from shared.config import settings
 
 
 MANAGER_WAIT_TIME_MINUTES = 0.1  # How often to run manager iteration (in minutes)
@@ -82,8 +83,18 @@ def run_manager_iteration():
                 if (reminder.suggested_date and (nearest_slot.date < reminder.suggested_date)) or not reminder.suggested_date:
                     print(f"Sending email to {reminder.email} about slot {nearest_slot.date}")
                     # reminder.suggested_date = nearest_slot.date
-                    send_mail(reminder.email, nearest_slot.date)
 
+                    context = {
+                        "user_name": "John Doe",
+                        "current_exam_date": "12.12.2025 ob 14:20",
+                        "earlier_slot_date": "10.2.2026 ob 14:40",
+                        "test_center_name_or_location": "Ljubljana Center",
+                        "test_type": "Vožnja",
+                        "accept_slot_link": settings.base_url + "/potrdi-termin?id=",
+                        "decline_slot_link": settings.base_url + "/zavrni-termin?id=",
+                        "unsubscribe_link": settings.base_url + "/",
+                    }
+                    send_mail(reminder.email, context)
 
             # 4. Delete slots
             session.query(AvpSlot).filter(AvpSlot.service_url == url).delete()

@@ -21,6 +21,7 @@ if not list(cwd.glob(".env")):
 class ProjectSettings(BaseSettings):
     project_name: str = "TerminiAlert"
     log_level: str = "DEBUG"
+    base_url: str = "http://localhost:8000"
 
 
 class PostgresSettings(BaseSettings):
@@ -52,7 +53,14 @@ class ScraperSettings(BaseSettings):
     ]
 
 
-class Settings(ProjectSettings, PostgresSettings, ScraperSettings):
+class NotificationSettings(BaseSettings):
+    mailjet_api_key: str
+    mailjet_api_secret: str
+    from_email: str = "termini@pesko.si"
+    from_name: str = "Termini Alert"
+
+
+class Settings(ProjectSettings, PostgresSettings, ScraperSettings, NotificationSettings):
     model_config = SettingsConfigDict(
         env_file=str(dotenv_path), env_file_encoding="utf-8", extra="ignore"
     )

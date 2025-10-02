@@ -13,7 +13,6 @@ psycopg2
 Scrapy
 
 # Other
-requests
-yagmail
+mailjet_rest
 Jinja2
 premailer
