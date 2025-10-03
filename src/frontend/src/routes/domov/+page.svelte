@@ -1,11 +1,20 @@
 <script>
-    let { data } = $props();
-    
+    import { page } from '$app/stores';
     import { onMount } from 'svelte';
     import { initFlowbite } from 'flowbite';
 
-    import { delReminder } from '$lib/api';
+    let { data } = $props();
 
+    import { delReminder } from '$lib/api';
+    import { refreshPage } from '$lib/utils';
+    import { modal } from '$lib/stores/modal.js';
+    import { toasts } from '$lib/stores/toast.js';
+
+    let backUrl = $derived.by(() => {
+        $page.url.searchParams.delete("action");
+        $page.url.searchParams.delete("id");
+        return $page.url.toString();
+    });
     let reminders = $derived(data.reminders);
 
     async function deleteReminder(event, id) {
@@ -14,8 +23,43 @@
         reminders = reminders.filter(item => item.reminder_id !== id);
     }
 
-    onMount(() => {
+    let deleteReminderBtn = $state();
+
+    async function openDeleteModal(id, name) {
+        modal.open("confirmation", null, {
+            execute: async () => {
+                try {
+                    await deleteReminder(event, id)
+                    toasts.success("Izbris uspešen");
+                    // Refresh
+                    refreshPage();
+                } catch (err) {
+                    toasts.error(err);
+                }
+            },
+            asyncFunc: true,
+            title: "Izbrisali boste opomnik",
+            name,
+            confirmBtnText: "Izbriši"
+        });
+    }
+
+    async function openReminderModal(reminder) {
+        modal.open("reminder", backUrl, {
+            reminder
+        });
+    }
+
+    onMount(async () => {
         initFlowbite();
+
+        let operation = $page.url.searchParams.get("action");
+        let id = $page.url.searchParams.get("id");
+        if (operation === "izbris" && id) {
+            deleteReminderBtn.click();
+        } else if (operation === "potrdi") {
+            await openReminderModal(reminders.find(r => r.reminder_id == id));
+        }
     });
 </script>
 
@@ -34,8 +78,8 @@
                         Moji opomniki
                     </h2>
                     <div class="w-full md:w-auto flex flex-col md:flex-row items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-                        <a href="/ustvari" type="button" class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-                            <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <a href="/ustvari" type="button" class="btn btn-primary btn-flex">
+                            <svg class="h-4 w-4 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                             </svg>
                             Dodaj opomnik
@@ -59,14 +103,14 @@
                         </thead>
                         <tbody>
                             {#each reminders as reminder}
-                            <tr class="border-b dark:border-gray-700">
-                                <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{reminder.reminder_name}</th>
-                                <td class="px-4 py-3">{(reminder.filters.exam_type == 1) ? "Teorija" : "Vožnja"}</td>
-                                <td class="px-4 py-3">{new Date(reminder.current_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>
+                            <tr class="border-b dark:border-gray-700 hover:cursor-pointer hover:bg-primary-50 transition" >
+                                <th onclick={() => openReminderModal(reminder)} scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{reminder.reminder_name}</th>
+                                <td onclick={() => openReminderModal(reminder)} class="px-4 py-3">{(reminder.filters.exam_type == 1) ? "Teorija" : "Vožnja"}</td>
+                                <td onclick={() => openReminderModal(reminder)} class="px-4 py-3">{new Date(reminder.current_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>
                                 {#if reminder.suggested_date}
-                                <td class="px-4 py-3">{new Date(reminder.suggested_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>
+                                <td onclick={() => openReminderModal(reminder)} class="px-4 py-3">{new Date(reminder.suggested_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>
                                 {:else}
-                                <td class="px-4 py-3">Ni datuma</td>
+                                <td onclick={() => openReminderModal(reminder)} class="px-4 py-3">Ni datuma</td>
                                 {/if}
                                 <td class="px-4 py-3 flex items-center justify-end">
                                     <!-- svelte-ignore a11y_consider_explicit_label -->
@@ -82,7 +126,9 @@
                                             </li>
                                         </ul>
                                         <div class="py-1">
-                                            <button onclick={(event) => deleteReminder(event, reminder.reminder_id)} class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-start">Izbriši</button>
+                                            <button bind:this={deleteReminderBtn} onclick={() => openDeleteModal(reminder.reminder_id, reminder.reminder_name)} class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white w-full text-start">
+                                                Izbriši
+                                            </button>
                                         </div>
                                     </div>
                                 </td>

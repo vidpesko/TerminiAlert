@@ -1,7 +1,7 @@
 import { redirect } from "@sveltejs/kit";
 
 import { createReminder, getReminders } from "$lib/api";
-import { toasts } from "$lib/toastStore";
+import { toasts } from "$lib/stores/toast.js";
 
 
 const filterKeys = ["exam_type", "cat", "location_district", "location", "calendar_date"];

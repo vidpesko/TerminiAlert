@@ -1,7 +1,7 @@
 <script>
     import { fly, slide } from "svelte/transition";
 
-    import { toasts } from "$lib/toastStore";
+    import { toasts } from "$lib/stores/toast.js";
 </script>
 
 

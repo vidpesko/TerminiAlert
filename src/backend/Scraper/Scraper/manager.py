@@ -90,9 +90,9 @@ def run_manager_iteration():
                         "earlier_slot_date": "10.2.2026 ob 14:40",
                         "test_center_name_or_location": "Ljubljana Center",
                         "test_type": "Vožnja",
-                        "accept_slot_link": settings.base_url + "/potrdi-termin?id=",
-                        "decline_slot_link": settings.base_url + "/zavrni-termin?id=",
-                        "unsubscribe_link": settings.base_url + "/",
+                        "accept_slot_link": settings.frontend_base_url + "/potrdi-termin?id=",
+                        "decline_slot_link": settings.frontend_base_url + "/zavrni-termin?id=",
+                        "unsubscribe_link": settings.frontend_base_url + f"/domov?id={reminder.reminder_id}&action=izbris",
                     }
                     send_mail(reminder.email, context)
 

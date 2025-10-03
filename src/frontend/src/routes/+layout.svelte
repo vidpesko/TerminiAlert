@@ -1,7 +1,11 @@
 <script>
+    import { modal } from '$lib/stores/modal.js';
+
     import Toast from "$lib/components/Toast.svelte";
     import LogoImg from "$lib/static/images/logo.svg";
     import LogoDarkImg from "$lib/static/images/logo dark.svg";
+    import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
+    import ReminderModal from '$lib/components/ReminderModal.svelte';
     
     import "../app.css";
 
@@ -9,12 +13,24 @@
 
     import { initFlowbite } from "flowbite";
 
-    let { data, children } = $props();
+    let { data, children, form } = $props();
+
+    let modals = {
+        confirmation: ConfirmationModal,
+        reminder: ReminderModal,
+    }
 
     onMount(() => {
         initFlowbite();
     });
 </script>
+
+
+{#if $modal.state === "open"}
+<!-- svelte-ignore svelte_component_deprecated -->
+<svelte:component this={modals[$modal.modalName]} data={$modal.data} {form} />
+{/if}
+
 
 <header class="antialiased">
     <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">

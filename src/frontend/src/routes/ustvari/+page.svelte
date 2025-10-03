@@ -1,14 +1,16 @@
 <script>
-    import Breadcrumbs from "$lib/components/Breadcrumbs.svelte";
-    import { locationOptions } from "$lib/options";
-
     import { onMount } from 'svelte';
     import { initFlowbite } from 'flowbite';
-    
+    import { enhance } from '$app/forms';
+
+    import Breadcrumbs from "$lib/components/Breadcrumbs.svelte";
+
+    import { locationOptions } from "$lib/options";
+    import { toasts } from "$lib/stores/toast.js";
+  import { goto } from '$app/navigation';
+
     let { data } = $props();
-
-    import { toasts } from "$lib/toastStore.js";
-
+    
     let examType = $state();
 
     const structure = [
@@ -31,7 +33,12 @@
         <Breadcrumbs structure={structure} />
 
         <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white mt-6">Ustvari opomnik</h2>
-        <form method="POST">
+        <form method="POST" use:enhance={() => {
+            return () => {
+                goto('/domov');
+                toasts.success("Opomnik je bil uspešno ustvarjen.");
+            }
+        }}>
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 <div class="col-span-2">
                     <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ime opomnika (ni obvezno)</label>
