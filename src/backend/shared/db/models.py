@@ -16,7 +16,7 @@ class Reminder(Base):
     reminder_name: Mapped[Optional[str]] = mapped_column(default="Opomnik")
     current_date: Mapped[DateTime] = mapped_column(DateTime)
     suggested_date: Mapped[Optional[DateTime]] = mapped_column(DateTime)
-    excluded_dates: Mapped[Optional[dict]] = mapped_column(JSONB)  # Format: [date 1, date 2,...]
+    found_dates: Mapped[Optional[dict]] = mapped_column(JSONB)  # Format: [{date: , status: accepted / rejected, index: 1,...}, ...]
 
     frequency: Mapped[Optional[str]] = mapped_column(default="medium")
     service_name: Mapped[str]

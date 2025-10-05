@@ -82,7 +82,17 @@ def run_manager_iteration():
             if (nearest_slot.date < reminder.current_date):
                 if (reminder.suggested_date and (nearest_slot.date < reminder.suggested_date)) or not reminder.suggested_date:
                     print(f"Sending email to {reminder.email} about slot {nearest_slot.date}")
-                    # reminder.suggested_date = nearest_slot.date
+                    # Add date to found dates. If user accepts the date, it will be set to suggested_date
+                    if not reminder.found_dates:
+                        reminder.found_dates = []
+                    reminder.found_dates.append(
+                        {
+                            "date": nearest_slot.date.strftime("%Y-%m-%d %H:%M:%S"),
+                            "id": nearest_slot.slot_id,
+                            "index": len(reminder.found_dates),
+                            "status": "needs_action", # needs_action, accepted, declined
+                        }
+                    )
 
                     context = {
                         "user_name": "John Doe",
@@ -90,9 +100,12 @@ def run_manager_iteration():
                         "earlier_slot_date": "10.2.2026 ob 14:40",
                         "test_center_name_or_location": "Ljubljana Center",
                         "test_type": "Vožnja",
-                        "accept_slot_link": settings.frontend_base_url + "/potrdi-termin?id=",
-                        "decline_slot_link": settings.frontend_base_url + "/zavrni-termin?id=",
-                        "unsubscribe_link": settings.frontend_base_url + f"/domov?id={reminder.reminder_id}&action=izbris",
+                        "accept_slot_link": settings.frontend_base_url
+                        + f"/domov?id={reminder.reminder_id}&action=potrdi&slot_id={nearest_slot.slot_id}",
+                        "decline_slot_link": settings.frontend_base_url
+                        + f"/domov?id={reminder.reminder_id}&action=zavrni&slot_id={nearest_slot.slot_id}",
+                        "unsubscribe_link": settings.frontend_base_url
+                        + f"/domov?id={reminder.reminder_id}&action=izbris",
                     }
                     send_mail(reminder.email, context)
 

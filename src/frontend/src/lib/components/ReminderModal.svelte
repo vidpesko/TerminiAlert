@@ -4,7 +4,7 @@
     import { initFlowbite } from "flowbite";
 
     import { modal } from "$lib/stores/modal";
-
+    import { formatDate } from "$lib/utils";
 
     let { data, form } = $props();
 
@@ -31,7 +31,7 @@
     <!-- Modal content -->
     <div class="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5 left-1/2 top-1/2 -translate-1/2 w-full z-50 mb-32 max-w-xl min-h-72">
         <!-- Modal header -->
-        <div class="flex justify-between items-center pb-1 rounded-t border-b mb-2 sm:mb-3 border-gray-200 dark:bg-gray-700">
+        <div class="flex justify-between items-center pb-1 rounded-t border-b border-gray-200 dark:bg-gray-700">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                 Opomnik <b>{data.reminder.reminder_name}</b>
             </h3>
@@ -42,19 +42,83 @@
         </div>
         <!-- Modal body -->
         <div class="">
-            <div class="">
-                j
+            <div class="w-full">
+                <!-- Current & latest accepted date -->
+                <dl class="grid gap-8 mx-auto w-full text-gray-900 sm:grid-cols-3 dark:text-white my-4">
+                    <div class="flex flex-col items-center justify-center">
+                        <dt class="mb-1 text-xl text-center md:text-2xl font-extrabold">{formatDate(data.reminder.current_date)}</dt>
+                        <dd class="font-light text-gray-500 dark:text-gray-400">trenutni datum</dd>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        {#if data.reminder.suggested_date}
+                        <dt class="mb-1 text-xl md:text-2xl font-extrabold text-center">{formatDate(data.reminder.suggested_date)}</dt>
+                        <dd class="font-light text-gray-500 dark:text-gray-400">predlagan datum</dd>
+                        {:else}
+                        <dt class="mb-1 text-xl md:text-2xl font-extrabold">Ni datuma</dt>
+                        <dd class="font-light text-gray-500 dark:text-gray-400">predlagan datum</dd>
+                        {/if}
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        {#if data.reminder.suggested_date && data.reminder.current_date}
+                        <dt class="mb-1 text-xl md:text-2xl font-extrabold text-center">
+                            {((new Date(data.reminder.current_date).getTime() - new Date(data.reminder.suggested_date).getTime()) / 86400000).toFixed(0)} dni
+                        </dt>
+                        <dd class="font-light text-gray-500 dark:text-gray-400">razlika</dd>
+                        {:else}
+                        <dt class="mb-1 text-xl md:text-2xl font-extrabold">
+                            /
+                        </dt>
+                        <dd class="font-light text-gray-500 dark:text-gray-400">razlika</dd>
+                        {/if}
+                    </div>
+                </dl>
+                <!-- Suggested dates -->
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Predlagani datumi</h3>
+                    <div class="max-h-48 overflow-y-auto pr-2 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                        {#if data.reminder.found_dates}
+                        <ul class="divide-y divide-gray-200 dark:divide-gray-600">
+                            {#each data.reminder.found_dates as slot}
+                            <li class="py-1 ps-4 pe-2 items-center text-sm text-gray-900 dark:text-white flex justify-between w-full">
+                                <p>
+                                    {slot.index + 1}
+                                </p>
+                                <p>
+                                    {formatDate(slot.date)}
+                                </p>
+                                <div class="flex gap-2">
+                                    {#if slot.status === 'accepted'}
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300">Sprejeto</span>
+                                    {:else if slot.status === 'declined'}
+                                    <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">Zavrnjeno</span>
+                                    {:else}
+                                    <button class="btn btn-primary py-1.5 px-3">
+                                        Potrdi
+                                    </button>
+                                    <button class="btn btn-danger py-1.5 px-3">
+                                        Zavrni
+                                    </button>
+                                    {/if}
+                                </div>
+                            </li>
+                            {/each}
+                        </ul>
+                        {:else}
+                        <div class="p-4 text-sm text-gray-500 dark:text-gray-400">Vsi predlagani datumi bodo prikazani tukaj.</div>
+                        {/if}
+                    </div>
+                </div>
             </div>
             <hr class="h-px w-full my-2 text-gray-200">
-            <!-- <button class="btn btn-primary" onclick={async () => {
-                await data.execute()
-                modal.close();
-            }}>
-                Izbriši
-            </button> -->
-            <button class="btn btn-outline btn-primary-outline" onclick={modal.close}>
-                Nazaj
-            </button>
+            <div class="flex gap-2">
+                <a class="btn btn-primary btn-flex gap-2" href={data.reminder.service_url} target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M7 17q-2.075 0-3.537-1.463T2 12t1.463-3.537T7 7h3q.425 0 .713.288T11 8t-.288.713T10 9H7q-1.25 0-2.125.875T4 12t.875 2.125T7 15h3q.425 0 .713.288T11 16t-.288.713T10 17zm2-4q-.425 0-.712-.288T8 12t.288-.712T9 11h6q.425 0 .713.288T16 12t-.288.713T15 13zm5 4q-.425 0-.712-.288T13 16t.288-.712T14 15h3q1.25 0 2.125-.875T20 12t-.875-2.125T17 9h-3q-.425 0-.712-.288T13 8t.288-.712T14 7h3q2.075 0 3.538 1.463T22 12t-1.463 3.538T17 17z"/></svg>
+                    Odpri "e-uprava.si"
+                </a>
+                <button class="btn btn-outline btn-primary-outline" onclick={modal.close}>
+                    Nazaj
+                </button>
+            </div>
         </div>
     </div>
 </div>
