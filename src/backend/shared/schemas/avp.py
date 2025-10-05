@@ -23,3 +23,8 @@ class ReminderSchema(BaseModel):
 
 
 # class ReminderUpdate()
+
+class SetSlotSchema(BaseModel):
+    reminder_id: int
+    slot_id: int
+    action: Literal["accept", "reject"]

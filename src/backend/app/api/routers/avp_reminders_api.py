@@ -2,8 +2,9 @@
 All operations regarding reminders for AVP (izpit iz CPP & voznje). Retrieving reminders, creating one, deleting one, editing...
 """
 from typing import Annotated
+from datetime import datetime
 
-from fastapi import APIRouter, Depends, Response, status, Query, HTTPException, Form
+from fastapi import APIRouter, Depends, Response, status, Query, HTTPException
 from sqlalchemy import select
 
 # Auth
@@ -16,7 +17,7 @@ from app.api.dependencies.core import DBSessionDep
 from shared.config import settings
 from shared.db.models import Reminder, ReminderUpdate
 from shared.schemas.base import SuccessMsg, WarningMsg, BaseMsg
-from shared.schemas.avp import ReminderSchema
+from shared.schemas.avp import ReminderSchema, SetSlotSchema
 
 
 router = APIRouter(
@@ -115,3 +116,52 @@ async def delete_reminders(
         return SuccessMsg(description="Reminder deleted.")
     else:
         return WarningMsg(description="Reminder does not exist.")
+
+
+# POST /set-slot: set found_date as suggested_date or reject it
+@router.post(
+    "/set-slot",
+)
+async def set_slot(
+    slot: SetSlotSchema,
+    db_session: DBSessionDep,
+) -> BaseMsg:
+    reminder_db = await db_session.get(Reminder, slot.reminder_id)
+
+    if not reminder_db:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Reminder does not exist.",
+        )
+
+    if not reminder_db.found_dates:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="There are no found dates to confirm.",
+        )
+
+    found_date = None
+    for fd in reminder_db.found_dates:
+        if fd["id"] == slot.slot_id:
+            found_date = fd
+            break
+
+    if not found_date:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="There is no found date with the given slot_id.",
+        )
+
+    date = datetime.strptime(found_date["date"], "%Y-%m-%d %H:%M:%S")
+
+    # Set suggested date
+    if slot.action == "accept":
+        reminder_db.suggested_date = date
+    elif reminder_db.suggested_date == date:
+        reminder_db.suggested_date = None
+    # Update found date status
+    found_date["status"] = slot.action
+
+    await db_session.commit()
+
+    return SuccessMsg(description=f"Slot {slot.action}ed.")
