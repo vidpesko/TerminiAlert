@@ -1,8 +1,8 @@
 <script>
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
-    import { initFlowbite } from "flowbite";
     import { goto, invalidateAll } from "$app/navigation";
+    import { initFlowbite } from "flowbite";
 
     import { modal } from "$lib/stores/modal";
     import { formatDate, refreshPage } from "$lib/utils";
@@ -33,8 +33,10 @@
         data.reminder.reminder_name = "TEST 2"
         toasts.success("Uspešno posodobljeno.");
         await invalidateAll();
+        modal.close();
+        initFlowbite();
+        // modal.open("reminder", data.backUrl, { reminder: data.reminder });
     }
-
 </script>
 
 

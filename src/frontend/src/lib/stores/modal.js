@@ -5,6 +5,7 @@ function createModalStore() {
     const { subscribe, update } = writable({});
 
     function open(modalName, backUrl = null, data = {}) {
+        data.backUrl = backUrl;
         update((modal) => modal = {
             modalName,
             backUrl,
