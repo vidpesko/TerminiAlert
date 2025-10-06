@@ -2,11 +2,15 @@
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
     import { initFlowbite } from "flowbite";
+    import { goto } from "$app/navigation";
 
     import { modal } from "$lib/stores/modal";
     import { formatDate } from "$lib/utils";
+    import { setSlotStatus } from "$lib/api";
 
     let { data, form } = $props();
+
+    let editStatus = $state(false);
 
     onMount(async () => {
         const handleKeydown = (event) => {
@@ -87,17 +91,25 @@
                                     {formatDate(slot.date)}
                                 </p>
                                 <div class="flex gap-2">
-                                    {#if slot.status === 'accepted'}
-                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300">Sprejeto</span>
-                                    {:else if slot.status === 'declined'}
-                                    <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">Zavrnjeno</span>
-                                    {:else}
-                                    <button class="btn btn-primary py-1.5 px-3">
+                                    {#if slot.status === "needs_action" || editStatus}
+                                    <button class="btn btn-primary py-1.5 px-3" onclick={() => {
+                                        setSlotStatus(data.reminder.reminder_id, slot.id, "accept");
+                                        refreshPage();
+                                    }}>
                                         Potrdi
                                     </button>
-                                    <button class="btn btn-danger py-1.5 px-3">
+                                    <button class="btn btn-danger py-1.5 px-3" onclick={() => setSlotStatus(data.reminder.reminder_id, slot.id, "reject")}>
                                         Zavrni
                                     </button>
+                                    {:else}
+                                        {#if slot.status === 'accepted'}
+                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1.5 rounded-sm dark:bg-green-900 dark:text-green-300">Sprejeto</span>
+                                        {:else if slot.status === 'rejected'}
+                                        <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-1.5 rounded-sm dark:bg-red-900 dark:text-red-300">Zavrnjeno</span>
+                                        {/if}
+                                        <button onclick={() => editStatus = true}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500 hover:text-black" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M5 19h1.425L16.2 9.225L14.775 7.8L5 17.575zm-1 2q-.425 0-.712-.288T3 20v-2.425q0-.4.15-.763t.425-.637L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.437.65T21 6.4q0 .4-.138.763t-.437.662l-12.6 12.6q-.275.275-.638.425t-.762.15zM19 6.4L17.6 5zm-3.525 2.125l-.7-.725L16.2 9.225z"/></svg>
+                                        </button>
                                     {/if}
                                 </div>
                             </li>

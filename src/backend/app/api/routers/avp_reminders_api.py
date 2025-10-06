@@ -6,6 +6,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, Response, status, Query, HTTPException
 from sqlalchemy import select
+from sqlalchemy.orm.attributes import flag_modified
 
 # Auth
 
@@ -160,7 +161,12 @@ async def set_slot(
     elif reminder_db.suggested_date == date:
         reminder_db.suggested_date = None
     # Update found date status
-    found_date["status"] = slot.action
+    for i, fd in enumerate(reminder_db.found_dates):
+        if fd["id"] == slot.slot_id:
+            reminder_db.found_dates[i]["status"] = slot.action + "ed"
+            break
+
+    flag_modified(reminder_db, "found_dates")
 
     await db_session.commit()
 

@@ -32,3 +32,21 @@ export async function createReminder(data) {
     const json = await response.json();
     return json;
 }
+
+export async function setSlotStatus(reminderId, slotId, status) {
+    const url = API_BASE + "avp/set-slot";
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "reminder_id": reminderId,
+            "slot_id": slotId,
+            "action": status
+        }),
+    });
+    const json = await response.json();
+    return json;
+}

@@ -2,7 +2,6 @@ from typing import Optional, List
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.ext.declarative import DeferredReflection
 from sqlalchemy import BigInteger, String, Text, func, Table, DateTime, ForeignKey
 
 from . import Base
