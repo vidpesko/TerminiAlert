@@ -111,3 +111,28 @@ export const locationOptions = {
         [214, "Za izpit s tolmačem teorija Maribor, Cesta k Tamu 11"],
     ],
 };
+
+export const categories = {
+    4: "A",
+    2: "A1",
+    3: "A2",
+    1: "AM",
+    6: "B",
+    5: "B1",
+    7: "BE",
+    10: "C",
+    8: "C1",
+    9: "C1E",
+    11: "CE",
+    14: "D",
+    12: "D1",
+    13: "D1E",
+    15: "DE",
+    16: "F",
+    17: "G"
+};
+
+export const examTypes = {
+    2: "Teorija",
+    1: "Vožnja"
+};

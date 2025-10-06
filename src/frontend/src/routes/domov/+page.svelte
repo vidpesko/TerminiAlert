@@ -105,7 +105,7 @@
                             {#each reminders as reminder}
                             <tr class="border-b dark:border-gray-700 hover:cursor-pointer hover:bg-primary-50 transition" >
                                 <th onclick={() => openReminderModal(reminder)} scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">{reminder.reminder_name}</th>
-                                <td onclick={() => openReminderModal(reminder)} class="px-4 py-3">{(reminder.filters.exam_type == 1) ? "Teorija" : "Vožnja"}</td>
+                                <td onclick={() => openReminderModal(reminder)} class="px-4 py-3">{(reminder.filters.exam_type == 2) ? "Teorija" : "Vožnja"}</td>
                                 <td onclick={() => openReminderModal(reminder)} class="px-4 py-3">{new Date(reminder.current_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>
                                 {#if reminder.suggested_date}
                                 <td onclick={() => openReminderModal(reminder)} class="px-4 py-3">{new Date(reminder.suggested_date.replace(/\.\d+$/, '')).toLocaleString('sl-SI', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'}).replace(',', ' ob')}</td>

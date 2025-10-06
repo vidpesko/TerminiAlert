@@ -8,6 +8,7 @@
     import { formatDate, refreshPage } from "$lib/utils";
     import { setSlotStatus } from "$lib/api";
     import { toasts } from "$lib/stores/toast";
+    import { locationOptions, examTypes, categories } from "$lib/options";
 
     let { data, form } = $props();
 
@@ -60,6 +61,21 @@
         <!-- Modal body -->
         <div class="">
             <div class="w-full">
+                <!-- Reminder info -->
+                <dl class="grid gap-8 mx-auto w-full text-gray-900 sm:grid-cols-3 dark:text-white my-4">
+                    <div class="flex flex-col items-center justify-center">
+                        <dt class="mb-1 text-xl text-center md:text-2xl font-extrabold">{data.reminder.filters.cat.map(id => categories[id]).join(",")}</dt>
+                        <dd class="font-light text-gray-500 dark:text-gray-400">kategorije</dd>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <dt class="mb-1 text-xl text-center md:text-2xl font-extrabold">{examTypes[data.reminder.filters.exam_type]}</dt>
+                        <dd class="font-light text-gray-500 dark:text-gray-400">tip</dd>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <dt class="mb-1 text-xl text-center md:text-2xl font-extrabold">{locationOptions[data.reminder.filters.location_district].find(([id, address]) => id == data.reminder.filters.location)[1]}</dt>
+                        <dd class="font-light text-gray-500 dark:text-gray-400">lokacija</dd>
+                    </div>
+                </dl>
                 <!-- Current & latest accepted date -->
                 <dl class="grid gap-8 mx-auto w-full text-gray-900 sm:grid-cols-3 dark:text-white my-4">
                     <div class="flex flex-col items-center justify-center">
