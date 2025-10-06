@@ -2,11 +2,12 @@
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
     import { initFlowbite } from "flowbite";
-    import { goto } from "$app/navigation";
+    import { goto, invalidateAll } from "$app/navigation";
 
     import { modal } from "$lib/stores/modal";
-    import { formatDate } from "$lib/utils";
+    import { formatDate, refreshPage } from "$lib/utils";
     import { setSlotStatus } from "$lib/api";
+    import { toasts } from "$lib/stores/toast";
 
     let { data, form } = $props();
 
@@ -24,6 +25,16 @@
             window.removeEventListener("keydown", handleKeydown);
         };
     });
+
+    async function _setSlotStatus(reminder_id, slot_id, action) {
+        await setSlotStatus(reminder_id, slot_id, action);
+
+        // Update reminder data
+        data.reminder.reminder_name = "TEST 2"
+        toasts.success("Uspešno posodobljeno.");
+        await invalidateAll();
+    }
+
 </script>
 
 
@@ -92,13 +103,10 @@
                                 </p>
                                 <div class="flex gap-2">
                                     {#if slot.status === "needs_action" || editStatus}
-                                    <button class="btn btn-primary py-1.5 px-3" onclick={() => {
-                                        setSlotStatus(data.reminder.reminder_id, slot.id, "accept");
-                                        refreshPage();
-                                    }}>
+                                    <button class="btn btn-primary py-1.5 px-3" onclick={async () => await _setSlotStatus(data.reminder.reminder_id, slot.id, "accept")}>
                                         Potrdi
                                     </button>
-                                    <button class="btn btn-danger py-1.5 px-3" onclick={() => setSlotStatus(data.reminder.reminder_id, slot.id, "reject")}>
+                                    <button class="btn btn-danger py-1.5 px-3" onclick={async () => await _setSlotStatus(data.reminder.reminder_id, slot.id, "reject")}>
                                         Zavrni
                                     </button>
                                     {:else}
@@ -123,10 +131,12 @@
             </div>
             <hr class="h-px w-full my-2 text-gray-200">
             <div class="flex gap-2">
-                <a class="btn btn-primary btn-flex gap-2" href={data.reminder.service_url} target="_blank" rel="noopener noreferrer">
+                {#if data.reminder.service_url}
+                <a class="btn btn-primary btn-flex gap-2" href={data.reminder.service_url.replace("/content/singleton.html", "")} target="_blank" rel="noopener noreferrer">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M7 17q-2.075 0-3.537-1.463T2 12t1.463-3.537T7 7h3q.425 0 .713.288T11 8t-.288.713T10 9H7q-1.25 0-2.125.875T4 12t.875 2.125T7 15h3q.425 0 .713.288T11 16t-.288.713T10 17zm2-4q-.425 0-.712-.288T8 12t.288-.712T9 11h6q.425 0 .713.288T16 12t-.288.713T15 13zm5 4q-.425 0-.712-.288T13 16t.288-.712T14 15h3q1.25 0 2.125-.875T20 12t-.875-2.125T17 9h-3q-.425 0-.712-.288T13 8t.288-.712T14 7h3q2.075 0 3.538 1.463T22 12t-1.463 3.538T17 17z"/></svg>
                     Odpri "e-uprava.si"
                 </a>
+                {/if}
                 <button class="btn btn-outline btn-primary-outline" onclick={modal.close}>
                     Nazaj
                 </button>
