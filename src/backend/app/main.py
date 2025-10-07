@@ -7,10 +7,22 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from shared.config import settings
-from app.database import session_manager
-from app.api.routers import avp_reminders_api, users_api
-from shared.db.models import Reminder
+try:
+    from shared.config import settings
+    from shared.db.models import Reminder
+except ModuleNotFoundError:
+    path.append(str(Path.cwd().parent))
+    print(path)
+    from shared.config import settings
+    from shared.db.models import Reminder
+
+try:
+    from app.database import session_manager
+    from app.api.routers import avp_reminders_api, users_api
+except ModuleNotFoundError:
+    path.append(str(Path.cwd()))
+    from app.database import session_manager
+    from app.api.routers import avp_reminders_api, users_api
 
 
 @asynccontextmanager
@@ -52,4 +64,4 @@ app.include_router(avp_reminders_api.router)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=80, host="0.0.0.0")
+    uvicorn.run(app, port=8008, host="0.0.0.0")

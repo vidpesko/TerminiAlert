@@ -48,10 +48,7 @@ class PostgresSettings(BaseSettings):
 
 
 class ScraperSettings(BaseSettings):
-    scraper_allowed_domains: list[str] = ["www.avto.net", "avto.net"]
-    scraper_allowed_schemas: list[str] = [
-        "https",
-    ]
+    scraper_allowed_schemas: list[str] = ["https"]
 
 
 class NotificationSettings(BaseSettings):
