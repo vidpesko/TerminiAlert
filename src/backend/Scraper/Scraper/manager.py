@@ -16,6 +16,7 @@ from time import sleep
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.attributes import flag_modified
 
 try:
     import shared
@@ -81,33 +82,37 @@ def run_manager_iteration():
 
             if (nearest_slot.date < reminder.current_date):
                 if (reminder.suggested_date and (nearest_slot.date < reminder.suggested_date)) or not reminder.suggested_date:
-                    print(f"Sending email to {reminder.email} about slot {nearest_slot.date}")
                     # Add date to found dates. If user accepts the date, it will be set to suggested_date
                     if not reminder.found_dates:
                         reminder.found_dates = []
-                    reminder.found_dates.append(
-                        {
-                            "date": nearest_slot.date.strftime("%Y-%m-%d %H:%M:%S"),
-                            "id": nearest_slot.slot_id,
-                            "index": len(reminder.found_dates),
-                            "status": "needs_action", # needs_action, accepted, declined
-                        }
-                    )
+                    # check if date already in found_dates
+                    for found_date in reminder.found_dates:
+                        if found_date["date"] == nearest_slot.date.strftime("%Y-%m-%d %H:%M:%S"):
+                            break
+                    else:
+                        reminder.found_dates.append(
+                            {
+                                "date": nearest_slot.date.strftime("%Y-%m-%d %H:%M:%S"),
+                                "id": nearest_slot.slot_id,
+                                "index": len(reminder.found_dates),
+                                "status": "needs_action", # needs_action, accepted, declined
+                            }
+                        )
+                        flag_modified(reminder, "found_dates")
 
-                    context = {
-                        "user_name": "John Doe",
-                        "current_exam_date": "12.12.2025 ob 14:20",
-                        "earlier_slot_date": "10.2.2026 ob 14:40",
-                        "test_center_name_or_location": "Ljubljana Center",
-                        "test_type": "Vožnja",
-                        "accept_slot_link": settings.frontend_base_url
-                        + f"/domov?id={reminder.reminder_id}&action=potrdi&slot_id={nearest_slot.slot_id}",
-                        "decline_slot_link": settings.frontend_base_url
-                        + f"/domov?id={reminder.reminder_id}&action=zavrni&slot_id={nearest_slot.slot_id}",
-                        "unsubscribe_link": settings.frontend_base_url
-                        + f"/domov?id={reminder.reminder_id}&action=izbris",
-                    }
-                    send_mail(reminder.email, context)
+                        context = {
+                            "current_exam_date": reminder.current_date.strftime("%d.%m.%Y ob %H:%M"),
+                            "earlier_slot_date": nearest_slot.date.strftime("%d.%m.%Y ob %H:%M"),
+                            "test_center_name_or_location": "Ljubljana Center",
+                            "test_type": "Vožnja",
+                            "accept_slot_link": settings.frontend_base_url
+                            + f"/domov?id={reminder.reminder_id}&action=potrdi&slot_id={nearest_slot.slot_id}",
+                            "decline_slot_link": settings.frontend_base_url
+                            + f"/domov?id={reminder.reminder_id}&action=zavrni&slot_id={nearest_slot.slot_id}",
+                            "unsubscribe_link": settings.frontend_base_url
+                            + f"/domov?id={reminder.reminder_id}&action=izbris",
+                        }
+                        send_mail(reminder.email, context)
 
             # 4. Delete slots
             session.query(AvpSlot).filter(AvpSlot.service_url == url).delete()
@@ -120,7 +125,6 @@ def start_manager():
     print(f"Started manager at {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}")
     while True:
         run_manager_iteration()
-        return
         sleep(MANAGER_WAIT_TIME_MINUTES * 60)  # Convert minutes to seconds
 
 
