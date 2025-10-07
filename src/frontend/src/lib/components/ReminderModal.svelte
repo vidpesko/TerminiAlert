@@ -72,7 +72,11 @@
                         <dd class="font-light text-gray-500 dark:text-gray-400">tip</dd>
                     </div>
                     <div class="flex flex-col items-center justify-center">
+                        {#if data.reminder.filters.location_district == -1}
+                        <dt class="mb-1 text-xl text-center md:text-2xl font-extrabold">Vse</dt>
+                        {:else}
                         <dt class="mb-1 text-xl text-center md:text-2xl font-extrabold">{locationOptions[data.reminder.filters.location_district].find(([id, address]) => id == data.reminder.filters.location)[1]}</dt>
+                        {/if}
                         <dd class="font-light text-gray-500 dark:text-gray-400">lokacija</dd>
                     </div>
                 </dl>
