@@ -23,6 +23,7 @@ class ProjectSettings(BaseSettings):
     log_level: str = "DEBUG"
     frontend_base_url: str = "http://localhost:5173"
     backend_base_url: str = "http://localhost:8000"
+    backend_prefix: str = ""
 
 
 class PostgresSettings(BaseSettings):
