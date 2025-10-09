@@ -21,8 +21,8 @@ if not list(cwd.glob(".env")):
 class ProjectSettings(BaseSettings):
     project_name: str = "TerminiAlert"
     log_level: str = "DEBUG"
-    frontend_base_url: str = "http://localhost:5173"
-    backend_base_url: str = "http://localhost:8000"
+    frontend_base_url: str = "http://localhost:3003"
+    backend_base_url: str = "http://localhost:8008"
     backend_prefix: str = ""
 
 
