@@ -22,7 +22,7 @@ from shared.schemas.avp import ReminderSchema, SetSlotSchema
 
 
 router = APIRouter(
-    prefix="/api/avp",
+    prefix="/avp",
     tags=["avp", "termini"],
     # dependencies=[Depends(is_request_coming_from_gateway)],
     responses={404: {"description": "Not found"}},

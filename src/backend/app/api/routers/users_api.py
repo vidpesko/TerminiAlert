@@ -19,7 +19,7 @@ from shared.db.models import Reminder
 
 
 router = APIRouter(
-    prefix="/api/user",
+    prefix="/user",
     tags=["users"],
     # dependencies=[Depends(is_request_coming_from_gateway)],
     responses={404: {"description": "Not found"}},
