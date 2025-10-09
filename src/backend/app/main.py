@@ -12,7 +12,6 @@ try:
     from shared.db.models import Reminder
 except ModuleNotFoundError:
     path.append(str(Path.cwd().parent))
-    print(path)
     from shared.config import settings
     from shared.db.models import Reminder
 
@@ -49,7 +48,11 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Svelte dev server
+    # allow_origins=["http://localhost:5173"],  # Svelte dev server
+    allow_origins=[
+        "https://termini.pesko.si",
+        "https://termini.pesko.si",
+    ],
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
