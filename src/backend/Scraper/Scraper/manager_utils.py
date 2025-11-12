@@ -9,14 +9,22 @@ from mailjet_rest import Client
 from premailer import transform
 from jinja2 import Environment, FileSystemLoader
 
-from shared.config import settings
+try:
+    from shared.config import settings
+except ModuleNotFoundError:
+    import sys
+    from pathlib import Path
+
+    sys.path.append(str(Path.cwd().parent.parent))
+finally:
+    from shared.config import settings
 
 
 EMAIL_ADDRESS = "spletneresitve1@gmail.com"
 EMAIL_APP_PASSWORD = "ensq kzpe rvig fvtc"  # App password for the gmail account
 
 
-def avp_url_generator(filters: dict) -> str:
+def avp_url_generator(filters: dict, page=0) -> str:
     filters_keys_translation_table = {
         "exam_type": "type",
         "categories": "cat",
@@ -32,7 +40,8 @@ def avp_url_generator(filters: dict) -> str:
         "offset": 0,
         "sentinel_type": "ok",
         "sentinel_status": "ok",
-        "is_ajax": 1
+        "is_ajax": 1,
+        "page": page,
     }
 
     _filters = default_url_params
@@ -76,4 +85,12 @@ REMINDER_HANDLING_TABLE = {
 }
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    # Test avp url generator
+    filters = {
+        "exam_type": 2,
+        "categories": [1, 4],
+        "location_district": 18,
+    }
+
+    print(avp_url_generator(filters, page=2))
