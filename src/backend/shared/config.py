@@ -51,7 +51,7 @@ class PostgresSettings(BaseSettings):
 class ScraperSettings(BaseSettings):
     scraper_allowed_schemas: list[str] = ["https"]
 
-    manager_wait_time_minutes: int = 0.1  # How often to run manager iteration (in minutes)
+    manager_wait_time_minutes: int = 5  # How often to run manager iteration (in minutes)
     retry_limit: int = 20  # How many pages to enumerate for each reminder
 
 
