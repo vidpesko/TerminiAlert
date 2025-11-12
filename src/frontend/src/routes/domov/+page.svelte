@@ -53,6 +53,10 @@
     onMount(async () => {
         initFlowbite();
 
+        if (data.errors) {
+            toasts.error(data.errors[0]);
+        }
+
         let operation = $page.url.searchParams.get("action");
         let id = $page.url.searchParams.get("id");
         if (operation === "izbris" && id) {

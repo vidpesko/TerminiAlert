@@ -1,3 +1,6 @@
+import { toasts } from "$lib/stores/toast";
+
+
 const API_BASE = "http://localhost:8008/api/";
 
 
@@ -5,6 +8,9 @@ export async function getReminders(email) {
     const url = API_BASE + `avp/reminders?email=${email}`;
 
     const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`API napaka! Status: ${response.status}`);
+    }
     const json = await response.json();
     return json;
 }

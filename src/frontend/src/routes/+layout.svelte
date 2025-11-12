@@ -12,6 +12,7 @@
     import { onMount } from "svelte";
 
     import { initFlowbite } from "flowbite";
+    import { toasts } from '$lib/stores/toast';
 
     let { data, children, form } = $props();
 
