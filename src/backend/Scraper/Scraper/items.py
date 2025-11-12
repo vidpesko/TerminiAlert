@@ -8,7 +8,7 @@ from datetime import datetime
 from dataclasses import field, dataclass
 
 
-from itemloaders.processors import TakeFirst, MapCompose, Join, Identity
+from itemloaders.processors import TakeFirst, MapCompose, Join, Identity, Compose
 from scrapy.loader import ItemLoader
 
 
@@ -35,15 +35,15 @@ class SlotLoader(ItemLoader):
     date_in = MapCompose(lambda x: datetime.strptime(x, "%d. %m. %Y %H:%M"))
 
     spots_left_in = MapCompose(
-        lambda x: int(re.search(r"Še\s*(\d+)\s*", x).group(1))
+        lambda x: int(x.strip()),
     )
 
     exam_type_in = MapCompose(lambda x: VALUES_TRANSLATION_TABLE.get(x, x))
 
-    categories_in = MapCompose(lambda x: x.replace(",", ""))
-    categories_out = Identity()
+    categories_in = Compose(lambda x: x[0].split(", "))
+    categories_out = MapCompose(lambda x: x.replace(",", ""))
 
-    duration_in = MapCompose(lambda x: int(re.search(r"\(\s*trajanje\s*(\d+)\s*minut\s*\)", x).group(1)))
+    duration_in = Identity()
 
     location_in = MapCompose(lambda x: x.removeprefix(", "))
 

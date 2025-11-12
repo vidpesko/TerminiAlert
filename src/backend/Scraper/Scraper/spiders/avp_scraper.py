@@ -35,26 +35,33 @@ class AvpSpider(scrapy.Spider):
     def parse(self, response):
         slots = []
 
-        for event in response.css(".dogodek"):
+        raw_slots = zip(response.css(".js_dogodekBox"), response.css(".js_dicDetails"))
+
+        current_date = None
+        for event, event_details in raw_slots:
             slot = SlotLoader(item=Slot(), response=response, selector=event)
             # Date
-            start_time = event.xpath(".//div[contains(text(), 'Začetek ob')]//span/text()").get()  # Start time
+            start_time = event.css('td[data-th="Ura"]::text').get().strip()  # Start time
             date = event.css(".calendarBox::attr('aria-label')").get()
+            if date:
+                current_date = date
+            else:
+                date = current_date
             slot.add_value("date", f"{date} {start_time}")
             # Spots
-            slot.add_css("spots_left", ".contentOpomnik > .lessImportant::text")
+            slot.add_css("spots_left", 'td[data-th="Prosta mesta"]::text')
             # Exam type
-            slot.add_css("exam_type", ".contentOpomnik > div:nth-of-type(2)::text")
-            # Categories
-            slot.add_xpath("categories", ".//div[contains(text(), 'Kategorije:')]//span/text()")
-            # Duration
-            slot.add_xpath(
-                "duration",
-                ".//div[contains(text(), 'Začetek ob')]/text()[last()]",
+            slot.add_value(
+                "exam_type",
+                event_details.xpath('normalize-space(//tr[@class="js_dicDetails dicDetails"]/td/text()[last()])').get()
             )
+            # Categories
+            slot.add_xpath("categories", 'normalize-space(//td[@data-th="Kategorije"])')
+            # Duration
+            slot.add_value("duration", 0) # ! AVP removed duration info
             # Location
-            slot.add_css("location_district", ".upperOpomnikDiv > span::text")
-            slot.add_css("location", ".upperOpomnikDiv > span:nth-of-type(2)::text")
+            slot.add_css("location_district", ".dicDisclaimer::text")
+            slot.add_value("location", event_details.css(".dicTitle2::text").get())
 
             slot_item = slot.load_item()
             slots.append(slot_item)

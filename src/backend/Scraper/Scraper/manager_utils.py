@@ -41,7 +41,7 @@ def avp_url_generator(filters: dict) -> str:
         new_key = filters_keys_translation_table.get(key, key)
         _filters[new_key] = val
 
-    url = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini/content/singleton.html?"
+    url = "https://e-uprava.gov.si/si/javne-evidence/prosti-termini-zemljevid/content/singleton.html?"
     url_params = urlencode(_filters, doseq=True)
 
     return url + url_params
