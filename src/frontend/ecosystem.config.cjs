@@ -9,7 +9,7 @@ module.exports = {
         DOMAIN: "termini.pesko.si",
         PORT: "3003",
         HOST: "127.0.0.1",
-        ORIGIN: "http://termini.pesko.si"
+        ORIGIN: "https://termini.pesko.si"
       }
     }
   ],
