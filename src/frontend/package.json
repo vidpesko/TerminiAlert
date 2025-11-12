@@ -20,6 +20,7 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"dotenv": "^17.2.3",
 		"flowbite": "^3.1.2"
 	}
 }
