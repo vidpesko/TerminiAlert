@@ -30,10 +30,6 @@ from manager_utils import REMINDER_HANDLING_TABLE, send_mail
 from shared.config import settings
 
 
-MANAGER_WAIT_TIME_MINUTES = 0.1  # How often to run manager iteration (in minutes)
-RETRY_LIMIT = 20  # How many pages to enumerate for each reminder
-
-
 # Global sqlalchemy engine instance
 engine = create_engine(settings.create_engine_url())
 
@@ -75,7 +71,7 @@ def run_manager_iteration():
                 url = reminder.service_url
 
             retries = 0
-            while retries < RETRY_LIMIT:
+            while retries < settings.retry_limit:
                 response = run_spider(spider_name, [url, ])  # TODO Check if response returns error
                 slots = session.query(AvpSlot).where(AvpSlot.service_url == url).order_by(AvpSlot.date).all()
                 if len(slots) > 0:
@@ -131,7 +127,7 @@ def start_manager():
     print(f"Started manager at {datetime.now().strftime('%d.%m.%Y %H:%M:%S')}")
     while True:
         run_manager_iteration()
-        sleep(MANAGER_WAIT_TIME_MINUTES * 60)  # Convert minutes to seconds
+        sleep(settings.manager_wait_time_minutes * 60)  # Convert minutes to seconds
 
 
 if __name__ == "__main__":
